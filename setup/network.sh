@@ -35,12 +35,16 @@ DEVICE=enp6s0
 NAME=enp6s0
 ONBOOT=yes
 BOOTPROTO=static
-PREFIX=22
+PREFIX=24
 IPADDR=10.0.2.1
 GATEWAY=10.0.0.1
 DNS1=10.0.0.1
 DNS2=1.1.1.1
 ETHTOOL_OPTS="wol g"
+EOL
+
+tee /etc/sysconfig/network-scripts/route-enp6s0 >/dev/null << EOL
+default via 10.0.0.1 dev enp6s0
 EOL
 
 service network restart

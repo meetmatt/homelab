@@ -1,9 +1,9 @@
 #!/bin/bash
 
-dnf update -y
-dnf install -y centos-release-openstack-yoga
-dnf install -y network-scripts lvm2 crudini screen htop
-dnf install -y openstack-packstack
+dnf update -yq
+dnf install -yq centos-release-openstack-yoga
+dnf install -yq network-scripts lvm2 crudini screen htop
+dnf install -yq openstack-packstack
 
 # Allow SSH on all IPs
 echo ListenAddress 0.0.0.0 >> /etc/ssh/sshd_config
@@ -19,6 +19,7 @@ echo vm.max_map_count=262144 >> /etc/sysctl.conf
 echo vm.swappiness=1 >> /etc/sysctl.conf
 
 # Delete LVM
+wipefs -a /dev/swift-volumes/swift-lvs
 lvremove -fy swift-volumes
 vgremove -fy swift-volumes
 vgremove -fy cinder-volumes
