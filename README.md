@@ -10,6 +10,9 @@ Random scripts for home lab
 * 512G NVMe
 * 2TB SSD
 * RTX 2070 8G
+* 2 NICs: 10.0.1.1/16, 10.0.2.1/16
+* Home router 10.0.0.1/8
+* Home DHCP 10.0.0.1/24
 
 ## Contents
 
