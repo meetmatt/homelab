@@ -16,10 +16,10 @@ fi
 
 rm image.iso
 
-cp ./setup/grub.cfg ${ISODIR}/EFI/BOOT/grub.cfg
-cp ./ks.cfg ${ISODIR}/ks.cfg
-cp ./setup/setup.service ${ISODIR}/isolinux/setup.service
-cp ./setup/setup.sh ${ISODIR}/isolinux/setup.sh
+cp ./image/grub.cfg      ${ISODIR}/EFI/BOOT/grub.cfg
+cp ./image/ks.cfg        ${ISODIR}/ks.cfg
+cp ./image/setup.service ${ISODIR}/isolinux/setup.service
+cp ./image/setup.sh      ${ISODIR}/isolinux/setup.sh
 
 cd ${ISODIR}
 

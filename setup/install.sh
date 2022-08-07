@@ -1,15 +1,22 @@
 #!/bin/bash
 
-# Prevent setup from restarting after boot
-systemctl disable setup
-
-dnf update -y
-dnf install -y epel-release
-dnf config-manager --enable crb
 dnf update -y
 dnf install -y centos-release-openstack-yoga
 dnf install -y network-scripts lvm2 crudini screen htop
 dnf install -y openstack-packstack
+
+# Allow SSH on all IPs
+echo ListenAddress 0.0.0.0 >> /etc/ssh/sshd_config
+
+# Passwordless sudo for user
+echo 'user ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/user
+
+# Kernel tweaks
+echo fs.inotify.max_queued_events=1048576 >> /etc/sysctl.conf
+echo fs.inotify.max_user_instances=1048576 >> /etc/sysctl.conf
+echo fs.inotify.max_user_watches=1048576 >> /etc/sysctl.conf
+echo vm.max_map_count=262144 >> /etc/sysctl.conf
+echo vm.swappiness=1 >> /etc/sysctl.conf
 
 # Delete LVM
 lvremove -fy swift-volumes
