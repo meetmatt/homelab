@@ -81,4 +81,9 @@ HOME=/root packstack --answer-file=/root/answers.txt
 ### TODO: for some reason immediately after installation network cannot be reconfigured right away
 ### Reboot and reconfigure network manually
 
+wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/network.sh -P /root
+wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/openstack.sh -P /root
+chmod +x /root/network.sh
+chmod +x /root/openstack.sh
+
 reboot now

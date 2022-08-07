@@ -23,7 +23,7 @@ OVSBOOTPROTO=none
 TYPE=OVSBridge
 OVS_EXTRA="set bridge br-ex fail_mode=standalone"
 BOOTPROTO=static
-PREFIX=24
+PREFIX=16
 IPADDR=10.0.1.1
 GATEWAY=10.0.0.1
 DNS1=10.0.0.1
@@ -35,16 +35,12 @@ DEVICE=enp6s0
 NAME=enp6s0
 ONBOOT=yes
 BOOTPROTO=static
-PREFIX=24
-IPADDR=10.0.2.1
+PREFIX=16
+IPADDR=10.0.1.2
 GATEWAY=10.0.0.1
 DNS1=10.0.0.1
 DNS2=1.1.1.1
 ETHTOOL_OPTS="wol g"
-EOL
-
-tee /etc/sysconfig/network-scripts/route-enp6s0 >/dev/null << EOL
-default via 10.0.0.1 dev enp6s0
 EOL
 
 service network restart
