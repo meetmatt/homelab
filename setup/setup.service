@@ -1,0 +1,14 @@
+[Unit]
+Description=Run once
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Group=root
+ExecStart=/root/setup.sh
+StandardOutput=file:/root/setup_output.log
+StandardError=file:/root/setup_error.log
+
+[Install]
+WantedBy=multi-user.target

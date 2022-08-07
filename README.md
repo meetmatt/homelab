@@ -17,6 +17,17 @@ Random scripts for home lab
 ## Contents
 
 1. USB ISO drive burner for MacOS.
-1. CentOS.
-1. Kickstart script.
-1. Openstack setup script (via packstack).
+2. CentOS.
+3. Kickstart script.
+4. Openstack setup script (via packstack).
+
+## Setup
+
+1. Download [CentOS iso](https://www.centos.org/download/) and untar under ./iso directory.
+2. Insert USB stick and run ./make.sh.
+3. Wait for it to finish burning, eject, insert into Zotac.
+4. Start, F8, select to boot from EUFI USB.
+5. Wait 15-30 minutes and check for machine to boot.
+6. Run network.sh, test network, wake-on-lan, etc.
+7. Run openstack.sh, test everything else.
+8. Experiment and fix issues.
