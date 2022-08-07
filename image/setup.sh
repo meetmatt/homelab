@@ -13,3 +13,5 @@ dnf install -y wget
 
 wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/install.sh -P /root
 chmod +x /root/install.sh
+
+HOME=/root /root/install.sh
