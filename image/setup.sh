@@ -3,12 +3,11 @@
 # Prevent setup from restarting after boot
 systemctl disable setup
 
-dnf update -y
-dnf install -y epel-release
+dnf update -yq
+dnf install -yq epel-release
 dnf config-manager --enable crb
-dnf update -y
-
-dnf install -y wget
+dnf update -yq
+dnf install -yq wget
 
 wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/install.sh -P /root
 chmod +x /root/install.sh

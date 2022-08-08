@@ -20,7 +20,6 @@ echo vm.max_map_count=262144 >> /etc/sysctl.conf
 echo vm.swappiness=1 >> /etc/sysctl.conf
 
 # Delete LVM
-wipefs -a /dev/swift-volumes/swift-lvs
 lvremove -fy swift-volumes
 vgremove -fy swift-volumes
 vgremove -fy cinder-volumes
@@ -34,11 +33,14 @@ EOL
 # Create LVM for Cinder and Swift
 vgcreate cinder-volumes /dev/sdc1
 vgcreate swift-volumes /dev/sdc2
-lvcreate -n swift-lvs -l 100%FREE swift-volumes
+lvcreate -y -n swift-lvs -l 100%FREE swift-volumes
 mkfs.ext4 /dev/swift-volumes/swift-lvs
 
 # Download post install
 wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/post-install.sh -P /root
 chmod +x /root/post-install.sh
+
+# Not running the post-install from systemd due to not being able to SSH to itself as root
+# Searching for solutions didn't lead anywhere, so I'll probably have to embrace the manual ssh + post-install.sh :/
 
 reboot now

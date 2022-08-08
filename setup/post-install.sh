@@ -43,13 +43,52 @@ HOME=/root packstack --answer-file=/root/answers.txt
 wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/openstack.sh -P /root
 chmod +x /root/openstack.sh
 
+# TODO: fix packstack failing to provision itself at 10.0.1.1 after OVS moving the interface behind the br-ex
+# The solution was to wait until it gets stuck at network host ssh puppet phase (can be seen in htop)
+# then move the 10.0.1.1 to enp6s0 with network-scripts, wait for the puppet to finish and then move the IPs back
+# Somehow it doesn't happen with simple packstack --allinone, but happens when overriding the answers...
+# Probably it's a bug. May be I need to set the network host to 10.0.1.2, but afraid that the configs will get screwed up.
+
+# TODO: Another issue is nova and swift daemons trying to bind to exact IP (10.0.1.1) instead of simply 0.0.0.0
+# Manually changing it to bind 0.0.0.0 solves it, but not sustainable and almost impossible to automate cleanly...
+
+# Adjust network interfaces
+tee /etc/sysconfig/network-scripts/ifcfg-enp5s0 >/dev/null << EOL
+DEVICE=enp5s0
+NAME=enp5s0
+DEVICETYPE=ovs
+TYPE=OVSPort
+OVS_BRIDGE=br-ex
+ONBOOT=yes
+BOOTPROTO=none
+EOL
+
+tee /etc/sysconfig/network-scripts/ifcfg-br-ex >/dev/null << EOL
+DEVICE=br-ex
+DEVICETYPE=ovs
+NAME=br-ex
+ONBOOT=yes
+PEERDNS=no
+NM_CONTROLLED=no
+NOZEROCONF=yes
+OVSBOOTPROTO=none
+TYPE=OVSBridge
+OVS_EXTRA="set bridge br-ex fail_mode=standalone"
+BOOTPROTO=static
+PREFIX=24
+IPADDR=10.0.1.1
+GATEWAY=10.0.0.1
+DNS1=10.0.0.1
+DNS2=1.1.1.1
+EOL
+
 tee /etc/sysconfig/network-scripts/ifcfg-enp6s0 >/dev/null << EOL
 DEVICE=enp6s0
 NAME=enp6s0
 ONBOOT=yes
 BOOTPROTO=static
-PREFIX=16
-IPADDR=10.0.1.2
+PREFIX=22
+IPADDR=10.0.2.1
 GATEWAY=10.0.0.1
 DNS1=10.0.0.1
 DNS2=1.1.1.1
@@ -58,7 +97,4 @@ EOL
 
 service network restart
 
-sleep 60
-
-# Reboot to test network, hopefully remotely
-reboot now
+shutdown now
