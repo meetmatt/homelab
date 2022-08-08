@@ -78,12 +78,26 @@ crudini --merge /root/answers.txt < /root/override.txt
 # Install openstack
 HOME=/root packstack --answer-file=/root/answers.txt
 
-### TODO: for some reason immediately after installation network cannot be reconfigured right away
-### Reboot and reconfigure network manually
-
-wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/network.sh -P /root
+# Download openstack setup script
 wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/openstack.sh -P /root
-chmod +x /root/network.sh
 chmod +x /root/openstack.sh
 
+tee /etc/sysconfig/network-scripts/ifcfg-enp6s0 >/dev/null << EOL
+DEVICE=enp6s0
+NAME=enp6s0
+ONBOOT=yes
+BOOTPROTO=static
+PREFIX=16
+IPADDR=10.0.1.2
+GATEWAY=10.0.0.1
+DNS1=10.0.0.1
+DNS2=1.1.1.1
+ETHTOOL_OPTS="wol g"
+EOL
+
+service network restart
+
+sleep 60
+
+# Reboot to test network, hopefully remotely
 reboot now
