@@ -3,10 +3,15 @@
 . keystonerc_admin
 
 # Create external network
-openstack network create external_network --provider:network_type flat --provider:physical_network extnet --router:external
+openstack network create external_network --provider-network-type flat --provider-physical-network extnet --external
 
 # Create public subnet
-openstack subnet create --name public_subnet --enable_dhcp=False --allocation-pool=start=10.0.1.100,end=10.0.1.200 --gateway=10.0.0.1 external_network 10.0.0.1/16
+openstack subnet create --no-dhcp \
+--allocation-pool=start=10.0.1.100,end=10.0.1.200 \
+--gateway=10.0.0.1 \
+--network external_network \
+--subnet-range 10.0.0.1/16 \
+public_subnet
 
 # Create router
 openstack router create router
@@ -23,7 +28,7 @@ openstack router add subnet router private_subnet
 chown swift:swift /srv/node/device1
 
 # Import Cirros image
-curl -L http://download.cirros-cloud.net/0.5.2/cirros-0.5.2-x86_64-disk.img | glance image-create --name='cirros 0.5.2' --visibility=public --container-format=bare --disk-format=qcow2
+curl -L http://download.cirros-cloud.net/0.6.0/cirros-0.6.0-x86_64-disk.img | glance image-create --name='cirros 0.6.0' --visibility=public --container-format=bare --disk-format=qcow2
 
 # Create project
 # openstack project create --enable internal

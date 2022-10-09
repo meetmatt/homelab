@@ -9,6 +9,8 @@ dnf install -yq openstack-packstack
 echo ListenAddress 0.0.0.0 >> /etc/ssh/sshd_config
 service sshd restart
 
+# TODO: generate root ssh key and add to authorized_keys
+
 # Passwordless sudo for user
 echo 'user ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/user
 
