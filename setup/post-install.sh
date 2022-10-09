@@ -1,12 +1,15 @@
 #!/bin/bash
 
+dnf update -yq
+dnf install -yq network-scripts
+
 systemctl disable NetworkManager
 systemctl stop NetworkManager
 systemctl enable network
 systemctl start network
 
 # Generate answer file
-HOME=/root packstack --allinone --gen-answer-file=/root/answers.txt
+packstack --allinone --gen-answer-file=/root/answers.txt
 
 # Create override file
 tee /root/override.txt >/dev/null << EOL
@@ -18,7 +21,7 @@ CONFIG_LBAAS_INSTALL=y
 CONFIG_DEFAULT_PASSWORD=qweasd
 CONFIG_KEYSTONE_ADMIN_PW=qweasd
 
-CONFIG_COMPUTE_HOSTS=10.0.1.1
+CONFIG_COMPUTE_HOSTS=10.0.2.1
 
 # Storage
 CONFIG_GLANCE_BACKEND=swift
@@ -37,7 +40,7 @@ EOL
 crudini --merge /root/answers.txt < /root/override.txt
 
 # Install openstack
-HOME=/root packstack --answer-file=/root/answers.txt
+packstack --answer-file=/root/answers.txt
 
 # Download openstack setup script
 wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/openstack.sh -P /root
@@ -47,7 +50,7 @@ chmod +x /root/openstack.sh
 # The solution was to wait until it gets stuck at network host ssh puppet phase (can be seen in htop)
 # then move the 10.0.1.1 to enp6s0 with network-scripts, wait for the puppet to finish and then move the IPs back
 # Somehow it doesn't happen with simple packstack --allinone, but happens when overriding the answers...
-# Probably it's a bug. May be I need to set the network host to 10.0.1.2, but afraid that the configs will get screwed up.
+# Probably it's a bug. May be I need to set the network host to 10.0.2.1, but afraid that the configs will get screwed up.
 
 # TODO: Another issue is nova and swift daemons trying to bind to exact IP (10.0.1.1) instead of simply 0.0.0.0
 # Manually changing it to bind 0.0.0.0 solves it, but not sustainable and almost impossible to automate cleanly...

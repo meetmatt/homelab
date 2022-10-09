@@ -2,7 +2,7 @@
 
 dnf update -yq
 dnf install -yq centos-release-openstack-yoga
-dnf install -yq network-scripts lvm2 crudini screen htop
+dnf install -yq lvm2 crudini screen htop
 dnf install -yq openstack-packstack
 
 # Allow SSH on all IPs
