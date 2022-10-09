@@ -42,5 +42,3 @@ chmod +x /root/post-install.sh
 
 # Not running the post-install from systemd due to not being able to SSH to itself as root
 # Searching for solutions didn't lead anywhere, so I'll probably have to embrace the manual ssh + post-install.sh :/
-
-reboot now
