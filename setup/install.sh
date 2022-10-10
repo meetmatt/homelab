@@ -1,10 +1,29 @@
 #!/bin/bash
 
+curl https://api.magicbell.com/notifications \
+  --request POST \
+  --header 'accept: application/json' \
+  --header 'content-type: application/json' \
+  --header 'X-MAGICBELL-API-SECRET: vqG5Eb0pHIECX36nUWW0ea7jujn5GH1nXx5G1zJs' \
+  --header 'X-MAGICBELL-API-KEY: 5bd4a218f16f459fe25ab455dc20c9ec10b5d134' \
+  --data '{
+    "notification": {
+        "title": "Installation started",
+        "content": "Openstack installation started",
+        "category": "new_message",
+        "recipients": [{
+            "email": "iurii.golikov@gmail.com"
+        }]
+    }
+  }'
+
 dnf update -yq
 dnf install -yq epel-release
 dnf config-manager --enable crb
 dnf update -yq
-dnf install -yq centos-release-openstack-yoga lvm2 crudini screen htop btop curl openstack-packstack
+dnf install -yq centos-release-openstack-yoga
+dnf install -yq lvm2 crudini screen htop btop wget
+dnf install -yq openstack-packstack
 
 # Allow SSH on all IPs
 echo ListenAddress 0.0.0.0 >> /etc/ssh/sshd_config
