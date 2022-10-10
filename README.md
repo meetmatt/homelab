@@ -27,7 +27,6 @@ Random scripts for home lab
 2. Insert USB stick and run ./make.sh.
 3. Wait for it to finish burning, eject, insert into Zotac.
 4. Start, F8, select to boot from EUFI USB.
-5. Wait 15-30 minutes and check for machine to boot.
-6. Run network.sh, test network, wake-on-lan, etc.
-7. Run openstack.sh, test everything else.
-8. Experiment and fix issues.
+5. Wait 15-30 minutes, open http://10.0.1.1
+6. Run openstack.sh, test everything else.
+7. Experiment and fix issues.
