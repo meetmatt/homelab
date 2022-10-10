@@ -3,7 +3,7 @@
 . keystonerc_admin
 
 # Create external network
-openstack network create external_network --provider-network-type flat --provider-physical-network extnet --external
+openstack network create external_network --provider-network-type flat --provider-physical-network extnet --share --external
 
 # Create public subnet
 openstack subnet create --no-dhcp \
@@ -16,7 +16,7 @@ public_subnet
 # Create router
 openstack router create router
 # Set router gateway to external network
-openstack router set --external-gateway external_network router
+openstack router set --external-gateway external_network --enable-snat router
 # Create private network
 openstack network create private_network
 # Create private subnet
