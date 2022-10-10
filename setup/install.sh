@@ -104,7 +104,8 @@ EOL
 service network restart
 
 # Bug: create swift user and assign ownership of /srv/node/device1; before installation
-useradd -UM -s /bin/false -g 160 -u 160 swift
+groupadd -g 160 swift
+useradd -M -s /bin/false -g 160 -u 160 swift
 mkdir -p -m 755 /srv/node/device1
 chown -R swift:swift /srv/node
 

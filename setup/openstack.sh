@@ -10,7 +10,7 @@ openstack subnet create --no-dhcp \
 --allocation-pool=start=10.0.1.100,end=10.0.1.200 \
 --gateway=10.0.0.1 \
 --network external_network \
---subnet-range 10.0.0.1/16 \
+--subnet-range 10.0.0.0/16 \
 public_subnet
 
 # Create router
@@ -20,7 +20,7 @@ openstack router set --external-gateway external_network --enable-snat router
 # Create private network
 openstack network create private_network
 # Create private subnet
-openstack subnet create --network private_network --subnet-range 192.168.0.1/24 --dhcp private_subnet
+openstack subnet create --network private_network --subnet-range 10.20.0.0/24 --dhcp private_subnet
 # Attach private subnet to router
 openstack router add subnet router private_subnet
 
