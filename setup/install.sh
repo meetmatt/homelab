@@ -1,9 +1,10 @@
 #!/bin/bash
 
 dnf update -yq
-dnf install -yq centos-release-openstack-yoga
-dnf install -yq lvm2 crudini screen htop btop curl
-dnf install -yq openstack-packstack
+dnf install -yq epel-release
+dnf config-manager --enable crb
+dnf update -yq
+dnf install -yq centos-release-openstack-yoga lvm2 crudini screen htop btop curl openstack-packstack
 
 # Allow SSH on all IPs
 echo ListenAddress 0.0.0.0 >> /etc/ssh/sshd_config

@@ -1,13 +1,10 @@
 #!/bin/bash
 
-dnf update -yq
-dnf install -yq epel-release
-dnf config-manager --enable crb
-dnf update -yq
-dnf install -yq wget
+dnf update -y
+dnf install -y systemd-container
 
 # Download installation script
-wget -q https://raw.githubusercontent.com/meetmatt/homelab/master/setup/install.sh -P /root
+curl -s https://raw.githubusercontent.com/meetmatt/homelab/master/setup/install.sh -O /root/install.sh
 chmod +x /root/install.sh
 
 # Install openstack
