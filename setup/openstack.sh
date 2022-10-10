@@ -24,9 +24,6 @@ openstack subnet create --network private_network --subnet-range 192.168.0.1/24 
 # Attach private subnet to router
 openstack router add subnet router private_subnet
 
-# Assign ownership of /srv/node/device1 to swift user
-chown swift:swift /srv/node/device1
-
 # Import Cirros image
 curl -L http://download.cirros-cloud.net/0.6.0/cirros-0.6.0-x86_64-disk.img | glance image-create --name='cirros 0.6.0' --visibility=public --container-format=bare --disk-format=qcow2
 
