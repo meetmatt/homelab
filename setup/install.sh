@@ -74,6 +74,78 @@ systemctl start network
 # Bug: adjust network interfaces BEFORE INSTALLATION, otherwise it will hang at neutron-openvswitch-agent not able to start
 # with error: ERROR neutron.plugins.ml2.drivers.openvswitch.agent.ovs_neutron_agent [-] Tunneling can't be enabled with invalid local_ip '10.0.1.1'. IP couldn't be found on this host's interfaces.
 
+# Enable enp5s0
+tee /etc/sysconfig/network-scripts/ifcfg-enp5s0 >/dev/null << EOL
+DEVICE=enp5s0
+NAME=enp5s0
+ONBOOT=yes
+BOOTPROTO=static
+PREFIX=16
+IPADDR=10.0.1.1
+GATEWAY=10.0.0.1
+DNS1=10.0.0.1
+DNS2=1.1.1.1
+EOL
+
+# Enable enp6s0 with WOL
+tee /etc/sysconfig/network-scripts/ifcfg-enp6s0 >/dev/null << EOL
+DEVICE=enp6s0
+NAME=enp6s0
+ONBOOT=yes
+BOOTPROTO=static
+PREFIX=16
+IPADDR=10.0.2.1
+GATEWAY=10.0.0.1
+DNS1=10.0.0.1
+DNS2=1.1.1.1
+ETHTOOL_OPTS="wol g"
+EOL
+
+service network restart
+
+# Bug: create swift user and assign ownership of /srv/node/device1; before installation
+useradd -UM -s /bin/false -g 160 -u 160 swift
+mkdir -p -m 755 /srv/node/device1
+chown -R swift:swift /srv/node
+
+# Install openstack via packstack
+
+# Generate answer file
+packstack --allinone --gen-answer-file=/root/answers.txt
+
+# Create override file
+tee /root/override.txt >/dev/null << EOL
+[general]
+CONFIG_PROVISION_DEMO=n
+CONFIG_CEILOMETER_INSTALL=n
+CONFIG_LBAAS_INSTALL=y
+CONFIG_DEFAULT_PASSWORD=qweasd
+CONFIG_KEYSTONE_ADMIN_PW=qweasd
+CONFIG_COMPUTE_HOSTS=10.0.2.1
+
+# Storage
+CONFIG_GLANCE_BACKEND=swift
+CONFIG_SWIFT_STORAGES=/dev/swift-volumes/swift-lvs
+CONFIG_CINDER_VOLUMES_CREATE=n
+
+# Configure Neutron
+CONFIG_NEUTRON_L2_AGENT=openvswitch
+CONFIG_NEUTRON_ML2_MECHANISM_DRIVERS=openvswitch
+CONFIG_NEUTRON_ML2_TYPE_DRIVERS=vxlan,flat
+CONFIG_NEUTRON_ML2_TENANT_NETWORK_TYPES=vxlan
+CONFIG_NEUTRON_OVS_BRIDGE_IFACES=br-ex:enp5s0
+EOL
+
+# Merge custom answers file with generated
+crudini --merge /root/answers.txt < /root/override.txt
+
+# Install openstack
+packstack --answer-file=/root/answers.txt
+
+# Download openstack setup script
+wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/openstack.sh -P /root
+chmod +x /root/openstack.sh
+
 # Move enp5s0's IP to br-ex
 tee /etc/sysconfig/network-scripts/ifcfg-enp5s0 >/dev/null << EOL
 DEVICE=enp5s0
@@ -104,65 +176,7 @@ DNS1=10.0.0.1
 DNS2=1.1.1.1
 EOL
 
-# Enable enp6s0 with WOL
-tee /etc/sysconfig/network-scripts/ifcfg-enp6s0 >/dev/null << EOL
-DEVICE=enp6s0
-NAME=enp6s0
-ONBOOT=yes
-BOOTPROTO=static
-PREFIX=16
-IPADDR=10.0.2.1
-GATEWAY=10.0.0.1
-DNS1=10.0.0.1
-DNS2=1.1.1.1
-ETHTOOL_OPTS="wol g"
-EOL
-
 service network restart
-
-# Bug: create swift user and assign ownership of /srv/node/device1; before installation
-useradd -M --shell /bin/false swift
-useradd -L swift
-mkdir -p -m 755 /srv/node/device1
-chown -R swift:swift /srv/node
-
-# Install openstack via packstack
-
-# Generate answer file
-packstack --allinone --gen-answer-file=/root/answers.txt
-
-# Create override file
-tee /root/override.txt >/dev/null << EOL
-[general]
-CONFIG_PROVISION_DEMO=n
-CONFIG_CEILOMETER_INSTALL=n
-CONFIG_LBAAS_INSTALL=y
-CONFIG_DEFAULT_PASSWORD=qweasd
-CONFIG_KEYSTONE_ADMIN_PW=qweasd
-CONFIG_COMPUTE_HOSTS=10.0.1.1
-
-# Storage
-CONFIG_GLANCE_BACKEND=swift
-CONFIG_SWIFT_STORAGES=/dev/swift-volumes/swift-lvs
-CONFIG_CINDER_VOLUMES_CREATE=n
-
-# Configure Neutron
-CONFIG_NEUTRON_L2_AGENT=openvswitch
-CONFIG_NEUTRON_ML2_MECHANISM_DRIVERS=openvswitch
-CONFIG_NEUTRON_ML2_TYPE_DRIVERS=vxlan,flat
-CONFIG_NEUTRON_ML2_TENANT_NETWORK_TYPES=vxlan
-CONFIG_NEUTRON_OVS_BRIDGE_IFACES=br-ex:enp5s0
-EOL
-
-# Merge custom answers file with generated
-crudini --merge /root/answers.txt < /root/override.txt
-
-# Install openstack
-packstack --answer-file=/root/answers.txt
-
-# Download openstack setup script
-wget https://raw.githubusercontent.com/meetmatt/homelab/master/setup/openstack.sh -P /root
-chmod +x /root/openstack.sh
 
 curl https://api.magicbell.com/notifications \
   --request POST \
