@@ -144,8 +144,8 @@ curl https://api.magicbell.com/notifications \
   --request POST \
   --header 'accept: application/json' \
   --header 'content-type: application/json' \
-  --header 'X-MAGICBELL-API-SECRET: ' \
-  --header 'X-MAGICBELL-API-KEY: ' \
+  --header 'X-MAGICBELL-API-SECRET: vqG5Eb0pHIECX36nUWW0ea7jujn5GH1nXx5G1zJs' \
+  --header 'X-MAGICBELL-API-KEY: 5bd4a218f16f459fe25ab455dc20c9ec10b5d134' \
   --data '{
     "notification": {
         "title": "Installation finished",
