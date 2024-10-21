@@ -1,22 +1,5 @@
 #!/bin/bash
 
-curl https://api.magicbell.com/notifications \
-  --request POST \
-  --header 'accept: application/json' \
-  --header 'content-type: application/json' \
-  --header 'X-MAGICBELL-API-SECRET: vqG5Eb0pHIECX36nUWW0ea7jujn5GH1nXx5G1zJs' \
-  --header 'X-MAGICBELL-API-KEY: 5bd4a218f16f459fe25ab455dc20c9ec10b5d134' \
-  --data '{
-    "notification": {
-        "title": "Installation started",
-        "content": "Openstack installation started",
-        "category": "new_message",
-        "recipients": [{
-            "email": "iurii.golikov@gmail.com"
-        }]
-    }
-  }'
-
 dnf update -yq
 dnf install -yq epel-release
 dnf config-manager --enable crb
@@ -178,24 +161,6 @@ DNS2=1.1.1.1
 EOL
 
 service network restart
-
-curl https://api.magicbell.com/notifications \
-  --request POST \
-  --header 'accept: application/json' \
-  --header 'content-type: application/json' \
-  --header 'X-MAGICBELL-API-SECRET: vqG5Eb0pHIECX36nUWW0ea7jujn5GH1nXx5G1zJs' \
-  --header 'X-MAGICBELL-API-KEY: 5bd4a218f16f459fe25ab455dc20c9ec10b5d134' \
-  --data '{
-    "notification": {
-        "title": "Installation finished",
-        "content": "Openstack installation finished",
-        "category": "new_message",
-        "action_url": "http://10.0.1.1",
-        "recipients": [{
-            "email": "iurii.golikov@gmail.com"
-        }]
-    }
-  }'
 
 # TODO: fix packstack failing to provision itself at 10.0.1.1 after OVS moving the interface behind the br-ex
 # The solution was to wait until it gets stuck at network host ssh puppet phase (can be seen in htop)
